@@ -1971,7 +1971,7 @@ footer {
       </div>
     </div>
     <div class="reveal reveal-delay-2">
-      <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <form id="contactForm" method="POST" onsubmit="return false;">
       <div class="form-field">
         <label class="form-label">Your Name</label>
         <input class="form-input" type="text" name="name" id="f-name" placeholder="Jane Smith" required>
@@ -2237,8 +2237,11 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
   showToast('viewToast');
 });
 
-/* ---- Contact form: Formspree AJAX submit, mailto fallback ---- */
+/* ---- Contact form: Google Apps Script submit, mailto fallback ---- */
 (function(){
+  // Paste your Apps Script /exec URL here when ready:
+  var SCRIPT_URL = "YOUR_APPS_SCRIPT_URL";
+
   const form = document.getElementById('contactForm');
   const btn  = document.getElementById('sendBtn');
   if (!form) return;
@@ -2247,7 +2250,6 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
     const name  = document.getElementById('f-name').value.trim();
     const email = document.getElementById('f-email').value.trim();
     const msg   = document.getElementById('f-msg').value.trim();
-    const action = form.getAttribute('action') || '';
 
     function mailtoFallback(){
       const subject = encodeURIComponent('Portfolio Inquiry' + (name ? ' from ' + name : ''));
@@ -2259,30 +2261,25 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
       showToast('toast');
     }
 
-    // If the Formspree ID hasn't been set yet, use mailto so it still works.
-    if (action.indexOf('YOUR_FORM_ID') !== -1 || action.indexOf('formspree.io') === -1){
+    // Until the Apps Script URL is set, fall back to mailto so nothing breaks.
+    if (SCRIPT_URL.indexOf('YOUR_APPS_SCRIPT') !== -1 || SCRIPT_URL.indexOf('script.google.com') === -1){
       mailtoFallback();
       return;
     }
 
     const original = btn.textContent;
     btn.textContent = 'Sending…'; btn.disabled = true;
-    fetch(action, {
+    fetch(SCRIPT_URL, {
       method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    }).then(function(res){
-      if (res.ok){
-        form.reset();
-        showToast('toast');
-      } else {
-        mailtoFallback();
-      }
-    }).catch(function(){
-      mailtoFallback();
-    }).finally(function(){
-      btn.textContent = original; btn.disabled = false;
-    });
+      body: JSON.stringify({ name: name, email: email, message: msg }),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }  // text/plain avoids a CORS preflight to Apps Script
+    }).then(function(res){ return res.json().catch(function(){ return { ok: res.ok }; }); })
+      .then(function(d){
+        if (d && d.ok){ form.reset(); showToast('toast'); }
+        else { mailtoFallback(); }
+      })
+      .catch(function(){ mailtoFallback(); })
+      .finally(function(){ btn.textContent = original; btn.disabled = false; });
   });
 })();
 
