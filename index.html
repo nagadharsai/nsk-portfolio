@@ -143,15 +143,8 @@ body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring { width: 56p
   pointer-events: none; z-index: 0;
   opacity: .55;
 }
-#three-hero {
-  position: fixed; top: 0; right: 0;
-  width: 55vw; height: 100vh;
-  pointer-events: none; z-index: 1;
-  opacity: .9;
-}
-@media (max-width: 980px){ #three-hero { width: 100vw; opacity: .4; } }
-:root[data-theme="light"] #three-hero { opacity: .55; }
-.blob {
+@media (max-width: 980px){ }
+:root[data-theme="light"] .blob {
   position: fixed;
   border-radius: 50%;
   filter: blur(110px);
@@ -254,44 +247,54 @@ nav.scrolled { background: var(--nav-bg-scroll); }
 .hero-photo-wrap {
   position: relative;
   justify-self: end;
-  width: 100%; max-width: 480px;
-  aspect-ratio: 4/5.2;
+  width: 100%; max-width: 420px;
   opacity: 0; animation: slideUp .9s ease .5s forwards;
 }
-/* Primary (new) photo — larger, lower-right */
+/* Hero photo — single, clean (the new cranes/mandala photo) */
 .hero-photo {
-  position: absolute; right: 0; bottom: 0;
-  width: 74%; aspect-ratio: 4/5;
+  width: 100%; aspect-ratio: 4/5;
   object-fit: cover;
   border-radius: var(--radius-lg);
   border: 3px solid var(--bg2);
-  display: block; z-index: 2;
+  display: block; position: relative; z-index: 2;
   box-shadow: 0 30px 70px rgba(58,36,20,.28);
 }
-/* Secondary (Comptroller) photo — smaller, upper-left, overlapping */
-.hero-photo-2 {
-  position: absolute; left: 0; top: 0;
-  width: 56%; aspect-ratio: 4/5;
-  object-fit: cover;
-  border-radius: var(--radius-lg);
-  border: 3px solid var(--bg2);
-  display: block; z-index: 3;
-  box-shadow: 0 20px 50px rgba(58,36,20,.26);
-}
 .hero-photo-glow {
-  position: absolute; right: 5%; bottom: 3%;
-  width: 70%; height: 80%;
+  position: absolute; inset: 4% 4% 0 4%;
   border-radius: var(--radius-lg);
   background: var(--grad);
-  filter: blur(34px); opacity: .22; z-index: 1;
+  filter: blur(34px); opacity: .2; z-index: 1;
 }
 @media (max-width: 980px) {
   .hero-grid { grid-template-columns: 1fr; gap: 44px; }
-  .hero-photo-wrap { justify-self: center; order: -1; max-width: 380px; margin: 0 auto; }
+  .hero-photo-wrap { justify-self: center; order: -1; max-width: 340px; margin: 0 auto; }
 }
-@media (max-width: 480px) {
-  .hero-photo-wrap { max-width: 320px; aspect-ratio: 4/5.4; }
+
+/* ===================== SECONDARY PHOTO (between sections) ===================== */
+.photo-band {
+  max-width: 1100px; margin: 20px auto; padding: 0 52px;
+  position: relative; z-index: 2;
+  display: flex; justify-content: flex-start;
 }
+.photo-band.right { justify-content: flex-end; }
+.photo-band-inner { position: relative; width: 100%; max-width: 380px; }
+.photo-band img {
+  width: 100%; aspect-ratio: 4/5; object-fit: cover;
+  border-radius: var(--radius-lg); border: 3px solid var(--bg2);
+  display: block; position: relative; z-index: 2;
+  box-shadow: 0 24px 60px rgba(58,36,20,.26);
+}
+.photo-band-glow {
+  position: absolute; inset: 6%; border-radius: var(--radius-lg);
+  background: var(--grad2); filter: blur(30px); opacity: .18; z-index: 1;
+}
+.photo-band-cap {
+  position: absolute; left: 18px; bottom: 16px; z-index: 3;
+  font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .5px;
+  color: #faf0e2; background: rgba(58,36,20,.65); backdrop-filter: blur(8px);
+  padding: 7px 13px; border-radius: 20px;
+}
+@media (max-width: 640px){ .photo-band, .photo-band.right { justify-content: center; padding: 0 24px; } }
 
 /* ===================== ABOUT SECTION ===================== */
 .about-grid {
@@ -1179,13 +1182,11 @@ footer {
   position: relative; z-index: 2;
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" async></script>
 </head>
 <body>
 
 <!-- Background -->
 <canvas id="particle-canvas"></canvas>
-<div id="three-hero"></div>
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 <div class="blob blob-3"></div>
@@ -1265,7 +1266,6 @@ footer {
   <div class="hero-photo-wrap">
     <div class="hero-photo-glow"></div>
     <img class="hero-photo" id="heroPhoto" alt="Nagadhar Sai Kanderi" />
-    <img class="hero-photo-2" id="heroPhoto2" alt="Nagadhar Sai Kanderi" />
   </div>
   </div>
 </section>
@@ -1295,6 +1295,16 @@ footer {
     <p>Over 6+ years I've shipped software where failure isn't an option — <strong>One Click Checkout at FedEx ShopRunner</strong> handling millions of daily transactions, and <strong>enterprise PeopleSoft systems serving over a million public employees</strong>. That work taught me how real systems behave under load, scrutiny, and consequence.</p>
     <p>Now my focus is wider. I'm building AI tools and automation in public, researching intelligent systems through a <strong>PhD in AI</strong>, and documenting the whole process — wins, dead ends, and what I learn along the way.</p>
     <p>My belief is simple: complexity can always be turned into leverage. That's what I build toward.</p>
+  </div>
+</div>
+
+<div class="glow-divider"></div>
+
+<!-- =================== SECONDARY PHOTO BAND =================== -->
+<div class="photo-band reveal">
+  <div class="photo-band-inner">
+    <div class="photo-band-glow"></div>
+    <img id="heroPhoto2" alt="Nagadhar Sai Kanderi" />
   </div>
 </div>
 
@@ -2340,150 +2350,7 @@ try{
 
 
 }catch(_e){console.warn("block failed, continuing:", _e);}
-/* ---- 3D hero: interconnected node network (systems) ---- */
-try{
 
-(function(){
-  var mount = document.getElementById('three-hero');
-  if (!mount) return;
-  // Three.js loads async; wait for it (up to ~8s) then init, or give up silently.
-  var tries = 0;
-  function waitThree(){
-    if (typeof THREE !== 'undefined') { initThree(); return; }
-    if (tries++ > 80) return; // ~8s, then stop (fallback = particle bg stays)
-    setTimeout(waitThree, 100);
-  }
-  function initThree(){
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(55, mount.clientWidth/mount.clientHeight, 0.1, 100);
-  camera.position.z = 6;
-
-  var renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
-  renderer.setSize(mount.clientWidth, mount.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  mount.appendChild(renderer.domElement);
-
-  var group = new THREE.Group();
-  scene.add(group);
-
-  // --- Build a 3D network of nodes connected by edges ---
-  var NODE_COUNT = 34;
-  var RADIUS = 2.6;
-  var nodes = [];
-  for (var i=0;i<NODE_COUNT;i++){
-    // distribute roughly on a sphere shell with jitter -> organic cluster
-    var th = Math.random()*Math.PI*2;
-    var ph = Math.acos(2*Math.random()-1);
-    var r = RADIUS * (0.55 + Math.random()*0.45);
-    nodes.push({
-      base: new THREE.Vector3(r*Math.sin(ph)*Math.cos(th), r*Math.sin(ph)*Math.sin(th), r*Math.cos(ph)),
-      phase: Math.random()*Math.PI*2
-    });
-  }
-
-  // node spheres
-  var nodeGeo = new THREE.SphereGeometry(0.055, 12, 12);
-  var nodeMat = new THREE.MeshBasicMaterial({ color: 0x58a6ff });
-  var nodeMat2 = new THREE.MeshBasicMaterial({ color: 0x2dd4bf });
-  var nodeMeshes = [];
-  for (var i=0;i<nodes.length;i++){
-    var m = new THREE.Mesh(nodeGeo, (i%3===0)?nodeMat2:nodeMat);
-    m.position.copy(nodes[i].base);
-    group.add(m); nodeMeshes.push(m);
-  }
-
-  // edges: connect each node to its nearest few neighbours
-  var linePositions = [];
-  var edgePairs = [];
-  for (var i=0;i<nodes.length;i++){
-    var dists = [];
-    for (var j=0;j<nodes.length;j++){
-      if (i===j) continue;
-      dists.push({ j:j, d: nodes[i].base.distanceTo(nodes[j].base) });
-    }
-    dists.sort(function(a,b){return a.d-b.d;});
-    var k = 2 + (i%2); // 2-3 neighbours
-    for (var n=0;n<k;n++){
-      var jj = dists[n].j;
-      if (jj > i) edgePairs.push([i, jj]); // avoid dup
-    }
-  }
-  var lineGeo = new THREE.BufferGeometry();
-  var linePosArr = new Float32Array(edgePairs.length * 6);
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePosArr, 3));
-  var lineMat = new THREE.LineBasicMaterial({ color: 0x58a6ff, transparent:true, opacity:0.22 });
-  var lines = new THREE.LineSegments(lineGeo, lineMat);
-  group.add(lines);
-
-  function updateEdges(){
-    var p = lineGeo.attributes.position.array;
-    for (var e=0;e<edgePairs.length;e++){
-      var a = nodeMeshes[edgePairs[e][0]].position;
-      var b = nodeMeshes[edgePairs[e][1]].position;
-      p[e*6]=a.x; p[e*6+1]=a.y; p[e*6+2]=a.z;
-      p[e*6+3]=b.x; p[e*6+4]=b.y; p[e*6+5]=b.z;
-    }
-    lineGeo.attributes.position.needsUpdate = true;
-  }
-
-  var tx=0, ty=0, cx=0, cy=0;
-  window.addEventListener('mousemove', function(e){
-    tx = (e.clientX / window.innerWidth - 0.5) * 2;
-    ty = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
-
-  var t=0;
-  function animate(){
-    requestAnimationFrame(animate);
-    t += 0.008;
-    cx += (tx - cx) * 0.05; cy += (ty - cy) * 0.05;
-    // gentle per-node drift so the network "breathes"
-    for (var i=0;i<nodes.length;i++){
-      var nb = nodes[i].base, ph = nodes[i].phase;
-      nodeMeshes[i].position.set(
-        nb.x + Math.sin(t + ph)*0.07,
-        nb.y + Math.cos(t*0.9 + ph)*0.07,
-        nb.z + Math.sin(t*1.1 + ph)*0.07
-      );
-    }
-    updateEdges();
-    if (!reduce){
-      group.rotation.y += 0.0022;
-      group.rotation.x = cy * 0.35;
-      group.rotation.z = cx * 0.12;
-      group.position.x = cx * 0.5;
-      group.position.y = -cy * 0.35;
-    }
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', function(){
-    camera.aspect = mount.clientWidth/mount.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-  });
-
-  // theme-aware edge color
-  var root = document.documentElement;
-  function applyTheme(){
-    var dark = root.getAttribute('data-theme') === 'dark';
-    lineMat.color.setHex(dark ? 0xe0945a : 0xa85d2b);
-    lineMat.opacity = dark ? 0.22 : 0.18;
-    nodeMat.color.setHex(dark ? 0xe0945a : 0xa85d2b);
-  }
-  applyTheme();
-  var btn = document.getElementById('themeToggle');
-  if (btn) btn.addEventListener('click', function(){ setTimeout(applyTheme, 50); });
-  } /* end initThree */
-  waitThree();
-})();
-
-
-
-}catch(_e){console.warn("block failed, continuing:", _e);}
 
 </script>
 <script>
