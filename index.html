@@ -1981,6 +1981,10 @@ footer {
         <input class="form-input" type="email" name="email" id="f-email" placeholder="jane@company.com" required>
       </div>
       <div class="form-field">
+        <label class="form-label">Phone</label>
+        <input class="form-input" type="tel" name="phone" id="f-phone" placeholder="+1 (555) 123-4567" required>
+      </div>
+      <div class="form-field">
         <label class="form-label">Message</label>
         <textarea class="form-textarea" name="message" id="f-msg" placeholder="Hi Sai — I'd love to connect about..." required></textarea>
       </div>
@@ -2249,11 +2253,13 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
     e.preventDefault();
     const name  = document.getElementById('f-name').value.trim();
     const email = document.getElementById('f-email').value.trim();
+    const phoneEl = document.getElementById('f-phone');
+    const phone = phoneEl ? phoneEl.value.trim() : '';
     const msg   = document.getElementById('f-msg').value.trim();
 
     function mailtoFallback(){
       const subject = encodeURIComponent('Portfolio Inquiry' + (name ? ' from ' + name : ''));
-      const body    = encodeURIComponent(msg + '\n\n— ' + name + '\n' + email);
+      const body    = encodeURIComponent(msg + '\n\n— ' + name + '\n' + email + (phone ? '\n' + phone : ''));
       const mailto  = 'mailto:nagadharsai@gmail.com?subject=' + subject + '&body=' + body;
       try { const w = window.open(mailto, '_blank'); if (!w) window.location.href = mailto; }
       catch(err){ window.location.href = mailto; }
@@ -2271,7 +2277,7 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
     btn.textContent = 'Sending…'; btn.disabled = true;
     fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ name: name, email: email, message: msg }),
+      body: JSON.stringify({ name: name, email: email, phone: phone, message: msg }),
       headers: { 'Content-Type': 'text/plain;charset=utf-8' }  // text/plain avoids a CORS preflight to Apps Script
     }).then(function(res){ return res.json().catch(function(){ return { ok: res.ok }; }); })
       .then(function(d){
