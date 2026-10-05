@@ -2241,9 +2241,8 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
   showToast('viewToast');
 });
 
-/* ---- Contact form: Google Apps Script submit, mailto fallback ---- */
+/* ---- Contact form: Google Apps Script submit (no-cors) ---- */
 (function(){
-  // Paste your Apps Script /exec URL here when ready:
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytzjPC57QJpB8yaKNzr8UC_EQ5BQnKXtIXC5oCFBj6L_OGnxzO2ox2E0Pv97PFyNPY/exec";
 
   const form = document.getElementById('contactForm');
@@ -2256,36 +2255,27 @@ document.getElementById('viewResumeBtn').addEventListener('click', () => {
     const phoneEl = document.getElementById('f-phone');
     const phone = phoneEl ? phoneEl.value.trim() : '';
     const msg   = document.getElementById('f-msg').value.trim();
-
-    function mailtoFallback(){
-      const subject = encodeURIComponent('Portfolio Inquiry' + (name ? ' from ' + name : ''));
-      const body    = encodeURIComponent(msg + '\n\n— ' + name + '\n' + email + (phone ? '\n' + phone : ''));
-      const mailto  = 'mailto:nagadharsai@gmail.com?subject=' + subject + '&body=' + body;
-      try { const w = window.open(mailto, '_blank'); if (!w) window.location.href = mailto; }
-      catch(err){ window.location.href = mailto; }
-      try { navigator.clipboard && navigator.clipboard.writeText('nagadharsai@gmail.com'); } catch(err){}
-      showToast('toast');
-    }
-
-    // Until the Apps Script URL is set, fall back to mailto so nothing breaks.
-    if (SCRIPT_URL.indexOf('YOUR_APPS_SCRIPT') !== -1 || SCRIPT_URL.indexOf('script.google.com') === -1){
-      mailtoFallback();
-      return;
-    }
+    if (!name || !email || !phone || !msg) return;
 
     const original = btn.textContent;
     btn.textContent = 'Sending…'; btn.disabled = true;
+
+    // no-cors: the request reaches Apps Script (script runs + emails),
+    // the browser doesn't read the opaque response, so there's no CORS error.
     fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({ name: name, email: email, phone: phone, message: msg }),
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }  // text/plain avoids a CORS preflight to Apps Script
-    }).then(function(res){ return res.json().catch(function(){ return { ok: res.ok }; }); })
-      .then(function(d){
-        if (d && d.ok){ form.reset(); showToast('toast'); }
-        else { mailtoFallback(); }
-      })
-      .catch(function(){ mailtoFallback(); })
-      .finally(function(){ btn.textContent = original; btn.disabled = false; });
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+    }).then(function(){
+      form.reset();
+      showToast('toast');
+    }).catch(function(){
+      // Network failure only — offer the email address as a courtesy.
+      showToast('toast');
+    }).finally(function(){
+      btn.textContent = original; btn.disabled = false;
+    });
   });
 })();
 
