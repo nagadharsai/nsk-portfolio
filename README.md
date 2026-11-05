@@ -1,7 +1,5 @@
-# Nagadhar Sai Kanderi — Portfolio
+# Portfolio redirect
 
-AI Software Engineer · AWS Certified Data Engineer · PhD Candidate in AI
+This legacy portfolio redirects to https://nagadharsaikanderi.vercel.app/.
 
-Personal portfolio website. Single self-contained `index.html` — deploys anywhere (Vercel, GitHub Pages, Netlify).
-
-**Features:** dark/light mode, interactive hero background, live GitHub section, AI News feed, embedded resume (view/download), contact form (Formspree-ready), and an AI assistant chat widget.
+Canonical source: https://github.com/nagadharsai/nsk-portfolio-v13 . Maintain employment and education there in server/profile.json. Previous design and content remain in Git history.
